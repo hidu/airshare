@@ -1,0 +1,36 @@
+Listen:
+  main: "{env.Listen|127.0.0.1:8080}"
+
+# 数据目录，当为空时，默认会使用应用根目录下的 data 目录
+# 若 KVDB，Session 使用 file 存储，其数据会存放在此目录下
+DataDir: "{env.AppDataDir}"
+
+# 分享的目录，必填
+ShareDir: "d:/temp/share/"
+
+# 分享的地址
+SharePath: "/share-view/"
+
+# ShareSite 用户访问的地址前缀
+ShareSite: "https://kxbyte.com"
+
+# 临时数据目录，当 RPCCache 使用 file 时，缓存内容会存储在此目录下
+# 当 M3u8TSCacheCount >0 时，视频分片数据也会存储在此目录下
+#TempDir: "{env.AppTempDir}"
+
+# 运行模式，可选 debug，product
+RunMode: "debug"
+
+Users:
+  - Username: admin
+    Password: psw
+
+Other:
+  MemoryLimit: 30 # 内存大小限制，单位  MiB
+  AdminPath: {env.AppAdminPath|/admin/} # 后台管理页面的地址，可选，默认为 /admin/
+  SecretKey: {env.AppSecretKey|9255f9f43c5057a878996044235df16f}  # 加密秘钥，可选，用于加密图片 id 等
+
+  LogStore:  "{env.AppLogStore|stderr}" # 日志输出，可选值: file - 输出到 log 目录的文件；stderr -输出到 stderr ；no - 不输出
+  LogLevel: "{env.AppLogLevel|DEBUG}" # 日志等级，可选值：DEBUG，INFO，WARN，ERROR
+
+

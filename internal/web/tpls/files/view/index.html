@@ -1,0 +1,15 @@
+<div>
+    <span class="text-primary fw-bold">📥下载文件</span>
+</div>
+<div class="mb-2">
+        {{ template "view/download-files.html" .}}
+</div>
+
+<div>
+    <span class="text-primary fw-bold">📤上传文件</span>
+    <span id="uploadToast" class="ms-3"></span>
+</div>
+<div class="mb-3">
+    {{ template "view/upload-files.html" .}}
+    {{ template "view/upload-form.html" }}
+</div>

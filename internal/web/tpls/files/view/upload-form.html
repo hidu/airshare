@@ -1,0 +1,284 @@
+<style>
+     .upload-zone {
+        border: 2px dashed #93c5fd;
+        border-radius: 12px;
+        background: #eff6ff;
+        transition: background-color .2s;
+        padding: 12px;
+        text-align: center;
+        color: #1d4ed8;
+        cursor: pointer; 
+    }
+     #fileList .file-name {
+    overflow-wrap: anywhere;
+  }
+</style>
+
+<form id="uploadForm">
+  <div id="dropZone" class="upload-zone p-2 text-center">
+    <div class="fs-1 mb-1">📤</div>
+    <div class="fw-semibold mb-2">
+      拖拽文件到这里<span class="mx-1">或</span><a id="selectBtn">点此选择文件</a>
+    </div>
+    <input type="file" id="fileInput" hidden multiple>
+  </div>
+
+  <div id="fileList" class="list-group mt-3"></div>
+  <div id="progressContainer" class="mt-3" hidden>
+    <div class="d-flex justify-content-between small mb-1">
+      <span id="progressText">准备上传...</span>
+      <span id="progressPercent">0%</span>
+    </div>
+    <div class="progress" role="progressbar" aria-label="上传进度"  aria-valuemin="0" aria-valuemax="100">
+      <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" style="width: 0%"></div>
+    </div>
+  </div>
+
+  <div id="uploadResult" class="mt-3" aria-live="polite"></div>
+
+  <div id="ctlArea" class="d-flex gap-4 mt-3 justify-content-center d-none">
+    <button type="submit" id="uploadBtn" class="btn btn-primary">上传</button>
+    <button type="button" id="clearBtn" class="btn btn-secondary">清空</button>
+  </div>
+</form>
+
+<style>
+  #dropZone.dragover {
+    background-color: var(--bs-tertiary-bg);
+    border-color: var(--bs-primary) !important;
+  }
+
+  #dropZone {
+    border-style: dashed !important;
+  }
+
+  #fileList .file-name {
+    overflow-wrap: anywhere;
+  }
+</style>
+
+<script>
+(() => {
+  const form = document.getElementById('uploadForm');
+  const dropZone = document.getElementById('dropZone');
+  const fileInput = document.getElementById('fileInput');
+  const selectBtn = document.getElementById('selectBtn');
+  const fileList = document.getElementById('fileList');
+  const uploadBtn = document.getElementById('uploadBtn');
+  const clearBtn = document.getElementById('clearBtn');
+  const progressContainer = document.getElementById('progressContainer');
+  const progressBar = document.getElementById('progressBar');
+  const progressText = document.getElementById('progressText');
+  const progressPercent = document.getElementById('progressPercent');
+  const uploadResult = document.getElementById('uploadResult');
+  const ctlArea = document.getElementById('ctlArea');
+
+  let files = [];
+  let uploading = false;
+
+  function formatSize(size) {
+    if (size < 1024) return size + ' B';
+    if (size < 1024 * 1024)
+      return (size / 1024).toFixed(1) + ' KB';
+    return (size / 1024 / 1024).toFixed(1) + ' MB';
+  }
+
+  function renderFiles() {
+    fileList.replaceChildren();
+
+    files.forEach((file, index) => {
+      const item = document.createElement('div');
+      item.className ='list-group-item d-flex align-items-center gap-3';
+
+      const info = document.createElement('div');
+      info.className = 'flex-grow-1 min-w-0';
+
+      const name = document.createElement('div');
+      name.className = 'file-name fw-medium';
+      name.textContent = file.name;
+
+      const size = document.createElement('div');
+      size.className = 'small text-secondary';
+      size.textContent = formatSize(file.size);
+
+      info.append(name, size);
+
+      const remove = document.createElement('button');
+      remove.type = 'button';
+      remove.className = 'btn btn-sm btn-outline-danger';
+      remove.textContent = '移除';
+      remove.disabled = uploading;
+      remove.addEventListener('click', () => {
+        files.splice(index, 1);
+        renderFiles();
+      });
+
+      item.append(info, remove);
+      fileList.append(item);
+    });
+
+    uploadBtn.disabled = uploading || files.length === 0;
+  }
+
+  function addFiles(selected) {
+    if (uploading) return;
+
+    for (const file of selected) {
+      // 避免重复添加同名、同大小文件
+      if (!files.some(f =>
+        f.name === file.name &&
+        f.size === file.size &&
+        f.lastModified === file.lastModified
+      )) {
+        files.push(file);
+      }
+    }
+
+    renderFiles();
+    uploadResult.replaceChildren();
+    progressContainer.hidden=true
+    ctlArea.classList.remove("d-none")
+  }
+
+  selectBtn.addEventListener('click', () => fileInput.click());
+
+  dropZone.addEventListener('click', (event) => {
+    if (event.target.closest('button')) return;
+    fileInput.click();
+  });
+
+  fileInput.addEventListener('change', () => {
+    addFiles(fileInput.files);
+    fileInput.value = '';
+  });
+
+  ['dragenter', 'dragover'].forEach(type => {
+    dropZone.addEventListener(type, event => {
+      event.preventDefault();
+      if (!uploading) dropZone.classList.add('dragover');
+    });
+  });
+
+  ['dragleave', 'drop'].forEach(type => {
+    dropZone.addEventListener(type, event => {
+      event.preventDefault();
+      dropZone.classList.remove('dragover');
+    });
+  });
+
+  dropZone.addEventListener('drop', event => {
+    if (!uploading) addFiles(event.dataTransfer.files);
+  });
+
+  clearBtn.addEventListener('click', () => {
+    if (uploading) return;
+    files = [];
+    renderFiles();
+    progressContainer.hidden = true;
+    uploadResult.replaceChildren();
+    ctlArea.classList.add("d-none")
+  });
+
+  function showResult(message, type) {
+    const div = document.createElement('div');
+    div.className = 'alert alert-' + type;
+    div.textContent = message;
+    uploadResult.append(div);
+  }
+
+  function uploadFile(file) {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      const data = new FormData();
+      data.append('file', file, file.name);
+
+      xhr.open('POST', 'upload', true);
+
+      xhr.upload.onprogress = event => {
+        if (event.lengthComputable) {
+          const percent = Math.round( event.loaded / event.total * 100 );
+          progressBar.style.width = percent + '%';
+          progressPercent.textContent = percent + '%';
+          progressText.textContent = '正在上传：' + file.name;
+        }
+      };
+
+      xhr.onload = () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          resolve();
+        } else {
+          let msg = '';
+          try {
+            msg = JSON.parse(xhr.responseText)?.Msg || '';
+          } catch {}
+          reject(new Error(file.name + '：HTTP ' +xhr.status + ','+msg ));
+        }
+      };
+
+      xhr.onerror = () => reject(
+        new Error(file.name + '：网络连接失败')
+      );
+
+      xhr.onabort = () => reject(
+        new Error(file.name + '：上传已取消')
+      );
+
+      xhr.send(data);
+    });
+  }
+
+  form.addEventListener('submit', async event => {
+    event.preventDefault();
+    if (uploading || files.length === 0) return;
+
+    uploading = true;
+    uploadBtn.disabled = true;
+    selectBtn.disabled = true;
+    progressContainer.hidden = false;
+    uploadResult.replaceChildren();
+
+    const selected = [...files];
+    const failed = [];
+    let completed = 0;
+
+    progressBar.classList.add('progress-bar-animated');
+
+    try {
+      for (const file of selected) {
+        progressBar.style.width = '0%';
+        progressPercent.textContent = '0%';
+        progressText.textContent = '准备上传：' + file.name;
+
+        try {
+          await uploadFile(file);
+        } catch (error) {
+          failed.push(error.message);
+        }
+
+        completed++;
+        progressText.textContent = `已处理 ${completed}/${selected.length} 个文件`;
+        progressBar.style.width = (completed / selected.length * 100) + '%';
+        progressPercent.textContent = Math.round(completed / selected.length * 100) + '%';
+      }
+
+      if (failed.length === 0) {
+        showResult('全部文件上传成功。', 'success');
+        files = [];
+      } else {
+        showResult( '上传失败：\n' + failed.join('\n'), 'warning' );
+        // 保留失败文件，便于用户重试
+        files = selected.filter(file =>
+          failed.some(message => message.startsWith(file.name + '：'))
+        );
+      }
+    } finally {
+      uploading = false;
+      selectBtn.disabled = false;
+      progressBar.classList.remove('progress-bar-animated');
+      renderFiles();
+    }
+  });
+
+  renderFiles();
+})();
+</script>

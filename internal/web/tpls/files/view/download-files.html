@@ -1,0 +1,29 @@
+{{ range $index,$file:=.DownloadFiles }}
+<div class="row p-1 border rounded m-1">
+    <div class="col-9 small">
+        <a href="d-file?name={{ $file.Name }}" target="_blank" class="text-decoration-none">{{ $file.Name }}</a>
+    </div>
+    <div class="col-3 text-end">
+        <a class="btn btn-sm btn-primary" href="d-file?name={{ $file.Name }}&action=download">下载</a>
+    </div>
+</div>
+{{ end }}
+
+{{ if not .DownloadFiles }}
+<div class="p-2 alert alert-primary">目录为空</div>
+{{ end }}
+
+{{ if .DownloadFiles }}
+<style>
+.annot {
+    background: #fffbeb;
+    border-left: 4px solid #f59e0b;
+    padding: 8px 14px;
+    border-radius: 0 8px 8px 0;
+    font-size: .85rem;
+}
+</style>
+<div class="annot small text-danger">
+    请立即下载保存，离开后将无法再次下载。
+</div>
+{{ end }}

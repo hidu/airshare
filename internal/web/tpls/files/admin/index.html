@@ -1,0 +1,57 @@
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"
+        integrity="sha384-HGmnkDZJy7mRkoARekrrj0VjEFSh9a0Z8qxGri/kTTAJkgR8hqD1lHsYSh3JdzRi"
+        crossorigin="anonymous"></script>
+
+<div class="row">
+    <div class="col-md-6">{{ template "admin/index/left" .}}</div>
+    <div class="col-md-6">{{ template "admin/index/right" .}}</div>
+</div>
+
+{{ define "admin/index/left"}}
+<div class="d-flex justify-content-center">
+<table class="table table-bordered w-75">
+    <caption class="caption-top text-center">Runtime</caption>
+    <tbody>
+    <tr>
+        <td class="text-end">ShareDir</td>
+        <td>{{.ShareDir}}</td>
+    </tr>
+    <tr>
+        <td class="text-end">Token</td>
+        <td class="d-flex justify-content-between">
+            <span class="fs-3">{{.Token}}</span>
+            <span>
+                Reflush:
+            <a class="text-decoration-none text-primary" href="?reflush=long">long</a>
+            <a class="text-decoration-none text-info ms-2" href="?reflush=short">short</a>
+            </span>
+            
+        </td>
+    </tr>
+    <tr>
+        <td class="text-end">ShareSite</td>
+        <td  class="d-flex justify-content-between">
+            <span>{{.ShareSite}}</span>
+            <a href="{{.URL}}" target="_blank" class="text-success text-decoration-none">Visit</a>
+        </td>
+    </tr>
+  
+    </tbody>
+</table>
+</div>
+{{ end }}
+
+{{ define "admin/index/right"}}
+<div  class="d-flex justify-content-center">
+    <canvas id="link-qr" style="min-height: 500px;min-width: 500px;"></canvas>
+</div>
+<script>
+var canvas = document.getElementById('link-qr')
+
+QRCode.toCanvas(canvas, "{{.URL}}", function (error) {
+  if (error) console.error(error)
+  console.log('success!');
+})
+</script>
+
+{{ end }}

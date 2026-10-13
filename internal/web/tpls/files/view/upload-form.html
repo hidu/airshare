@@ -18,7 +18,9 @@
   <div id="dropZone" class="upload-zone p-2 text-center">
     <div class="fs-1 mb-1">📤</div>
     <div class="fw-semibold mb-2">
-      拖拽文件到这里<span class="mx-1">或</span><a id="selectBtn">点此选择文件</a>
+      {{ xi_zh "拖拽文件到这里" "Drag and drop files here" }}
+      <span class="mx-1">{{ xi_zh "或" "or" }}</span>
+      <a id="selectBtn">{{ xi_zh "点此选择文件" "click here to select files" }}</a>
     </div>
     <input type="file" id="fileInput" hidden multiple>
   </div>
@@ -37,8 +39,8 @@
   <div id="uploadResult" class="mt-3" aria-live="polite"></div>
 
   <div id="ctlArea" class="d-flex gap-4 mt-3 justify-content-center d-none">
-    <button type="submit" id="uploadBtn" class="btn btn-primary">上传</button>
-    <button type="button" id="clearBtn" class="btn btn-secondary">清空</button>
+    <button type="submit" id="uploadBtn" class="btn btn-primary">{{ xi_zh "上传" "Upload" }}</button>
+    <button type="button" id="clearBtn" class="btn btn-secondary">{{ xi_zh "清空" "Clear" }}</button>
   </div>
 </form>
 
@@ -106,7 +108,7 @@
       const remove = document.createElement('button');
       remove.type = 'button';
       remove.className = 'btn btn-sm btn-outline-danger';
-      remove.textContent = '移除';
+      remove.textContent = '{{ xi_zh "移除" "Remove" }}';
       remove.disabled = uploading;
       remove.addEventListener('click', () => {
         files.splice(index, 1);
@@ -199,7 +201,7 @@
           const percent = Math.round( event.loaded / event.total * 100 );
           progressBar.style.width = percent + '%';
           progressPercent.textContent = percent + '%';
-          progressText.textContent = '正在上传：' + file.name;
+          progressText.textContent = '{{ xi_zh "正在上传：" "Uploading:" }}' + file.name;
         }
       };
 
@@ -216,11 +218,11 @@
       };
 
       xhr.onerror = () => reject(
-        new Error(file.name + '：网络连接失败')
+        new Error(file.name + '{{ xi_zh "：网络连接失败" ": Network Error"}}')
       );
 
       xhr.onabort = () => reject(
-        new Error(file.name + '：上传已取消')
+        new Error(file.name + '{{ xi_zh "：上传已取消" ": cancled" }}')
       );
 
       xhr.send(data);
@@ -256,16 +258,19 @@
         }
 
         completed++;
-        progressText.textContent = `已处理 ${completed}/${selected.length} 个文件`;
+        progressText.textContent = `{{ xi_zh "已处理" "Processed" }} ${completed}/${selected.length} {{ xi_zh "个文件" "files"}}`;
         progressBar.style.width = (completed / selected.length * 100) + '%';
         progressPercent.textContent = Math.round(completed / selected.length * 100) + '%';
       }
 
       if (failed.length === 0) {
-        showResult('全部文件上传成功。', 'success');
+        showResult('{{ xi_zh "全部文件上传成功。" "All files uploaded" }}', 'success');
         files = [];
+        setTimeout(() => {
+           location.reload();
+        }, 1000);
       } else {
-        showResult( '上传失败：\n' + failed.join('\n'), 'warning' );
+        showResult( '{{ xi_zh "上传失败：" "Upload failed:"}}\n' + failed.join('\n'), 'warning' );
         // 保留失败文件，便于用户重试
         files = selected.filter(file =>
           failed.some(message => message.startsWith(file.name + '：'))

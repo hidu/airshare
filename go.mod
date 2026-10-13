@@ -1,9 +1,9 @@
 module github.com/hidu/airshare
 
-go 1.27.1
+go 1.27.2
 
 require (
-	github.com/xanygo/anygo v0.0.0-20260927123046-9a58f0d81532
+	github.com/xanygo/anygo v0.0.0-20261013005237-78e9b2875b3b
 	github.com/xanygo/ext v0.0.0-20260918032735-5c87ef3293d1
 	github.com/xanygo/webr v0.0.0-20260918032814-391b677fc692
 )

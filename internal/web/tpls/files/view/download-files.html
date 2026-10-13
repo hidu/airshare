@@ -4,13 +4,14 @@
         <a href="d-file?name={{ $file.Name }}" target="_blank" class="text-decoration-none">{{ $file.Name }}</a>
     </div>
     <div class="col-3 text-end">
-        <a class="btn btn-sm btn-primary" href="d-file?name={{ $file.Name }}&action=download">下载</a>
+        <a class="btn btn-sm btn-primary" href="d-file?name={{ $file.Name }}">{{ xi_zh "查看" "Open"}}</a>
+        <a class="btn btn-sm btn-primary" href="d-file?name={{ $file.Name }}&action=download">{{ xi_zh "下载" "Download"}}</a>
     </div>
 </div>
 {{ end }}
 
 {{ if not .DownloadFiles }}
-<div class="p-2 alert alert-primary">目录为空</div>
+<div class="p-2 alert alert-primary">{{ xi_zh "目录为空" "Empty folder"}}</div>
 {{ end }}
 
 {{ if .DownloadFiles }}
@@ -24,6 +25,10 @@
 }
 </style>
 <div class="annot small text-danger">
+    {{ if xi_is "zh" }}
     请立即下载保存，离开后将无法再次下载。
+    {{ else }}
+    Please download and save now. Once you leave this page, it cannot be downloaded again.
+    {{ end }}
 </div>
 {{ end }}

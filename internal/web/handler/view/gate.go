@@ -3,8 +3,9 @@ package view
 import (
 	"net/http"
 
-	"github.com/hidu/airshare/internal/sharesrv"
 	"github.com/xanygo/anygo/xhttp"
+
+	"github.com/hidu/airshare/internal/sharesrv"
 )
 
 const cookieName = "token"
@@ -21,7 +22,7 @@ func jump(w http.ResponseWriter, r *http.Request) {
 		Value:    token,
 		Path:     sharesrv.SharePath(),
 		HttpOnly: true,
-		SameSite: http.SameSiteStrictMode,
+		SameSite: http.SameSiteLaxMode,
 	}
 	http.SetCookie(w, ck)
 	http.Redirect(w, r, sharesrv.SharePath(), http.StatusFound)

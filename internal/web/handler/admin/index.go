@@ -26,7 +26,9 @@ func index(w http.ResponseWriter, r *http.Request) {
 		"Token":     sharesrv.Token(),
 		"ShareDir":  sharesrv.ShareDir(),
 		"ShareSite": sharesrv.ShareSite(),
-		"URL":       base + "j?token=" + sharesrv.Token(),
+		"SharePath": sharesrv.SharePath(),
+		"JumpURL":   base + "j?token=" + sharesrv.Token(),
+		"LoginURL":  base + "l",
 	}
 	tpls.RenderAdminPage(w, r, "admin/index.html", values)
 }

@@ -10,48 +10,114 @@
 {{ define "admin/index/left"}}
 <div class="d-flex justify-content-center">
 <table class="table table-bordered w-75">
-    <caption class="caption-top text-center">Runtime</caption>
+    <caption class="caption-top text-center">{{ xi_zh "运行时" "Runtime" }}</caption>
     <tbody>
     <tr>
-        <td class="text-end">ShareDir</td>
+        <td class="text-end text-nowrap">{{ xi_zh "共享目录" "Shared Folder" }}</td>
         <td>{{.ShareDir}}</td>
     </tr>
     <tr>
-        <td class="text-end">Token</td>
+        <td class="text-end">{{ xi_zh "导出目录" "Export Path"}}</td>
         <td class="d-flex justify-content-between">
-            <span class="fs-3">{{.Token}}</span>
-            <span>
-                Reflush:
-            <a class="text-decoration-none text-primary" href="?reflush=long">long</a>
-            <a class="text-decoration-none text-info ms-2" href="?reflush=short">short</a>
-            </span>
-            
+          <span>{{.SharePath}}</span>
+           <a href="{{.SharePath}}/j?token={{.Token}}" target="_blank" class="text-success text-decoration-none">
+            {{ xi_zh "本地访问" "Local" }}
+          </a>
         </td>
     </tr>
     <tr>
-        <td class="text-end">ShareSite</td>
-        <td  class="d-flex justify-content-between">
-            <span>{{.ShareSite}}</span>
-            <a href="{{.URL}}" target="_blank" class="text-success text-decoration-none">Visit</a>
+        <td class="text-end">{{ xi_zh "访问密钥" "Token"}}</td>
+        <td class="text-nowrap">
+            <span class="fs-4 float-start">{{.Token}}</span>
+            <div class="row float-end">
+              <div class="col text-end align-content-around"> {{ xi_zh "刷新" "Reflush" }}:</div>
+              <div class="col text-start">
+                <div>
+                  <a class="text-decoration-none text-primary" href="?reflush=long">{{ xi_zh "长密钥" "Long" }}</a>
+                </div>
+                <div>
+                  <a class="text-decoration-none text-info" href="?reflush=short">{{ xi_zh "短密钥" "Short" }}</a>
+                </div>
+              </div>
+            </div>  
         </td>
     </tr>
-  
+    <tr>
+        <td class="text-end">{{ xi_zh "共享站点" "Export Site" }}</td>
+        <td  class="d-flex justify-content-between">
+            <span>{{.ShareSite}}</span>
+            <a href="{{.JumpURL}}" target="_blank" class="text-success text-decoration-none">{{ xi_zh "访问" "Visit" }}</a>
+        </td>
+    </tr>
     </tbody>
 </table>
 </div>
 {{ end }}
 
 {{ define "admin/index/right"}}
-<div  class="d-flex justify-content-center">
-    <canvas id="link-qr" style="min-height: 500px;min-width: 500px;"></canvas>
+<ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" 
+    role="tab" aria-controls="home-tab-pane" aria-selected="true">
+    {{ xi_zh "直接访问" "Direct" }}
+    </button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" 
+    role="tab" aria-controls="profile-tab-pane" aria-selected="false">
+      {{ xi_zh "登录页面" "Login" }}
+    </button>
+  </li>
+</ul>
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+    {{ template "admin/index/tab1" . }}
+  </div>
+  <div class="tab-pane" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+    {{ template "admin/index/tab2" . }}
+  </div>
+</div>
+{{ end }}
+
+
+{{ define "admin/index/tab1" }}
+<div  class="text-center">
+    <canvas id="link1-qr" style="min-height: 500px;min-width: 500px;"></canvas>
+    <div>{{.JumpURL}}</div>
+    <div class="text-muted">
+      {{ if xi_is "zh" }}
+      二维码的链接，已携带访问密钥，扫码后可直接访问共享页面。
+      {{ else }}
+      The QR code contains an access key for direct entry to the shared page.
+      {{ end }}
+    </div>
 </div>
 <script>
-var canvas = document.getElementById('link-qr')
+var canvas = document.getElementById('link1-qr')
 
-QRCode.toCanvas(canvas, "{{.URL}}", function (error) {
+QRCode.toCanvas(canvas, "{{.JumpURL}}", function (error) {
   if (error) console.error(error)
-  console.log('success!');
 })
 </script>
+{{ end }}
 
+{{ define "admin/index/tab2" }}
+<div  class="text-center">
+    <canvas id="link2-qr" style="min-height: 500px;min-width: 500px;"></canvas>
+    <div>{{.LoginURL}}</div>
+     <div class="text-muted">
+      {{ if xi_is "zh" }}
+      扫码后进入共享页面的登陆页面，输入正确的访问密钥后进入共享页面。
+      {{ else }}
+      Scan the QR code to open the login page, then enter the correct access key to access the shared page.
+      {{ end }}
+    </div>
+</div>
+<script>
+var canvas = document.getElementById('link2-qr')
+
+QRCode.toCanvas(canvas, "{{.LoginURL}}", function (error) {
+  if (error) console.error(error)
+})
+</script>
 {{ end }}

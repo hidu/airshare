@@ -21,8 +21,8 @@ github.com/rogpeppe/go-internal v1.16.0 h1:O9DK+vNMDVGLr2BeZqmpLeMjiMNkuXfcqntWb
 github.com/rogpeppe/go-internal v1.16.0/go.mod h1:DrUVZyrJU+txYW5/1kwtXQSMFio52ZOxX7yM1VHvnxs=
 github.com/stretchr/testify v1.12.1 h1:EuwCh5fleGS7H32xRwO3wRGT7DxrDhLAT6FF8MpWDWE=
 github.com/stretchr/testify v1.12.1/go.mod h1:MDEgiDPPsNp5cuIrHPPCyornHKgEVbtFUmoNlxoYthg=
-github.com/xanygo/anygo v0.0.0-20260927123046-9a58f0d81532 h1:DfsGI3ZzPsBIsk5TMG5FjMBbIRpQw+XcVQZVECP7/cE=
-github.com/xanygo/anygo v0.0.0-20260927123046-9a58f0d81532/go.mod h1:ysGdYzDDbvQvlA7V4IfQkwdPiNENYPkI1Fmm2R/tb/4=
+github.com/xanygo/anygo v0.0.0-20261013005237-78e9b2875b3b h1:78stdvC2Hc737vAdtpIZA3Jb6mESXU4gu8ir+bgXgBY=
+github.com/xanygo/anygo v0.0.0-20261013005237-78e9b2875b3b/go.mod h1:53eFY9zVgDplBZxV2/FWDFODJAx8qQcQ2VSPGT5UUMo=
 github.com/xanygo/ext v0.0.0-20260918032735-5c87ef3293d1 h1:uKGmM49pZJW1ZZeSnLxfaDyeRSuYrvV7OgeQp76CD1g=
 github.com/xanygo/ext v0.0.0-20260918032735-5c87ef3293d1/go.mod h1:ACdNYohrFOHsML3pKL14zuEOTc/vVOwp3EAvjJD9uJ0=
 github.com/xanygo/webr v0.0.0-20260918032814-391b677fc692 h1:jJoEle8CAEl4ywT4HzP/WHrv5XbFFT79i0uTeXoTd80=

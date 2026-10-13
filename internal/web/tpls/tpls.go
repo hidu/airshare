@@ -13,15 +13,24 @@ import (
 	"strings"
 
 	"github.com/xanygo/anygo/xhtml"
+	"github.com/xanygo/anygo/xi18n"
+
+	"github.com/hidu/airshare/internal/bootstrap"
 )
 
 var te *xhtml.TemplateEngine
 
 func init() {
 	maps.Copy(funcmap, xhtml.FuncMap)
-	t := template.Must(xhtml.WalkParseFS(template.New("files").Funcs(funcmap), files, "files", "*.html"))
+	it := xi18n.BuildTemplate(xi18n.LangZh, bootstrap.Bundle, func(t *template.Template) *template.Template {
+		return template.Must(xhtml.WalkParseFS(t.Funcs(funcmap), files, "files", "*.html"))
+	})
+
 	te = &xhtml.TemplateEngine{
-		Temp: t,
+		TemplateResolver: func(r *http.Request) xhtml.TemplateExecutor {
+			languages := xi18n.LanguagesFromContext(r.Context())
+			return it.Any(xi18n.LangZh, languages...)
+		},
 	}
 }
 

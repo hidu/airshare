@@ -4,8 +4,8 @@
          <a href="u-file?name={{ $file.Name }}" target="_blank" class="text-decoration-none">{{ $file.Name }}</a>
     </div>
     <div class="col-4 text-end text-nowrap">
-        <a class="btn btn-sm btn-danger me-2 uploadDelete" href="u-delete?name={{ $file.Name }}">删除</a>
-        <a class="btn btn-sm btn-primary" href="u-file?name={{ $file.Name }}&action=download">下载</a>
+        <a class="btn btn-sm btn-danger me-2 uploadDelete" href="u-delete?name={{ $file.Name }}">{{ xi_zh "删除" "Delete" }}</a>
+        <a class="btn btn-sm btn-primary" href="u-file?name={{ $file.Name }}&action=download">{{ xi_zh "下载" "Download" }}</a>
     </div>
 </div>
 {{ end }}
@@ -30,7 +30,7 @@
     document.querySelectorAll('.uploadDelete').forEach(el => {
     el.addEventListener('click', async (e) => {
         e.preventDefault();
-        if (!confirm('确定要删除这个文件吗？')) {
+        if (!confirm('{{ xi_zh "确定要删除这个文件吗？" "Delete this file?" }}')) {
         return;
         }
 
@@ -42,13 +42,13 @@
         const response = await resp.json();
 
         if (resp.ok && response.Code === 0) {
-            showToast("已删除");
+            showToast('{{ xi_zh "已删除" "Deleted" }}');
             el.closest('.row')?.remove();
         } else {
-            showToast('删除失败：' + (response.Msg || response.msg || '未知错误'),"error");
+            showToast('{{ xi_zh "删除失败：" "delete failed:" }}' + (response.Msg || response.msg || '{{ xi_zh "未知错误" "unknown error" }}'),"error");
         }
         } catch (err) {
-          showToast('删除请求失败：' + err.message,"error");
+          showToast('{{ xi_zh "删除请求失败：" "Delete request failed:" }}' + err.message,"error");
         }
     });
     });

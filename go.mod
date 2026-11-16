@@ -1,24 +1,14 @@
 module github.com/hidu/airshare
 
-go 1.27.2
+go 1.27.3
 
 require (
-	github.com/xanygo/anygo v0.0.0-20261013005237-78e9b2875b3b
-	github.com/xanygo/ext v0.0.0-20260918032735-5c87ef3293d1
-	github.com/xanygo/webr v0.0.0-20260918032814-391b677fc692
+	github.com/xanygo/anygo v0.0.0-20261116112512-69aafaad50f4
+	github.com/xanygo/ext v0.0.0-20261116133015-f2bf9b85d401
+	github.com/xanygo/webr v0.0.0-20261028045543-09738d97e3a9
 )
 
 require (
 	github.com/BurntSushi/toml v1.6.0 // indirect
-	github.com/gabriel-vasile/mimetype v1.4.13 // indirect
-	github.com/go-playground/locales v0.14.1 // indirect
-	github.com/go-playground/universal-translator v0.18.1 // indirect
-	github.com/go-playground/validator/v10 v10.30.3 // indirect
-	github.com/kr/text v0.2.0 // indirect
-	github.com/leodido/go-urn v1.4.0 // indirect
-	go.yaml.in/yaml/v3 v3.0.5 // indirect
-	golang.org/x/crypto v0.55.0 // indirect
-	golang.org/x/sys v0.47.0 // indirect
-	golang.org/x/text v0.41.0 // indirect
-	gopkg.in/yaml.v3 v3.0.1 // indirect
+	go.yaml.in/yaml/v4 v4.0.0 // indirect
 )
